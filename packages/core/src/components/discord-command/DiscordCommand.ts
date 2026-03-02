@@ -4,7 +4,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { when } from 'lit/directives/when.js';
-import { avatars, profiles } from '../../config.js';
+import { defaultDiscordAvatars, profiles, resolveAvatar } from '../../config.js';
 import type { LightTheme, Profile } from '../../types.js';
 import { messagesCompactMode, messagesLightTheme } from '../discord-messages/DiscordMessages.js';
 import { DiscordReply } from '../discord-reply/DiscordReply.js';
@@ -227,15 +227,11 @@ export class DiscordCommand extends LitElement implements LightTheme {
 		}
 	}
 
-	private resolveAvatar(avatar: string): string {
-		return avatars[avatar] ?? avatar ?? avatars.default;
-	}
-
 	protected override render() {
 		this.checkType();
 		const defaultData: Profile = { author: this.author, bot: false, verified: false, server: false, roleColor: this.roleColor };
-		const profileData: Profile = Reflect.get(profiles, this.profile) ?? {};
-		const profile: Profile = { ...defaultData, ...profileData, avatar: this.resolveAvatar(profileData.avatar ?? this.avatar) };
+		const profileData: Profile = profiles(this.profile) ?? {};
+		const profile: Profile = { ...defaultData, ...profileData, avatar: resolveAvatar(profileData.avatar ?? this.avatar) };
 
 		const defaultDataContext: Profile = {
 			author: this.contextUserName,
@@ -244,11 +240,11 @@ export class DiscordCommand extends LitElement implements LightTheme {
 			server: false,
 			roleColor: this.contextUserRoleColor
 		};
-		const profileDataContext: Profile = Reflect.get(profiles, this.contextUserProfile) ?? {};
+		const profileDataContext: Profile = profiles(this.contextUserProfile) ?? {};
 		const profileContext: Profile = {
 			...defaultDataContext,
 			...profileDataContext,
-			avatar: this.resolveAvatar(profileDataContext.avatar ?? this.contextUserAvatar)
+			avatar: resolveAvatar(profileDataContext.avatar ?? this.contextUserAvatar)
 		};
 
 		const contentContextMessage = this.contextMessageDeleted
@@ -311,7 +307,7 @@ export class DiscordCommand extends LitElement implements LightTheme {
 											() =>
 												html`<img
 													class="discord-replied-message-avatar"
-													src="${ifDefined(avatars.blue)}"
+													src="${ifDefined(defaultDiscordAvatars.blue)}"
 													alt="OFFICIALAPPLICATION"
 												/>`
 										)
