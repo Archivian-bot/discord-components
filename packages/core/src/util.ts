@@ -67,5 +67,5 @@ export function getGlobalEmojiUrl(emojiName: string): Emoji | undefined {
 export function getClanIcon(clanIcon: string | undefined): object | string | undefined {
 	if (!clanIcon) return undefined;
 
-	return icons.get(clanIcon) ?? clanIcon;
+	return icons.get(clanIcon) ?? getConfig().icons?.[clanIcon] ?? clanIcon;
 }

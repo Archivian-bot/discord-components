@@ -35,6 +35,7 @@ export interface DiscordMessageOptions {
 	defaultMode?: string;
 	defaultTheme?: string;
 	emojis?: { [key: string]: Emoji };
+	icons?: { [key: string]: string };
 	profiles?: { [key: string]: Profile };
 }
 
