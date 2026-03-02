@@ -56,7 +56,7 @@ export const defaultMode: string = getConfig().defaultMode === 'compact' ? 'comp
 
 export const defaultBackground: string = getConfig().defaultBackground === 'none' ? 'none' : 'discord';
 
-export const icons = new Map<string, object>([
+export const icons = new Map<string, object | string>([
 	['heart', Heart()],
 	['crystal', Crystal()],
 	['diamond', Diamond()],
@@ -77,5 +77,6 @@ export const icons = new Map<string, object>([
 	['skull', Skull()],
 	['sun', Sun()],
 	['sword', Sword()],
-	['water', Water()]
+	['water', Water()],
+	...Object.entries(getConfig().icons ?? {})
 ]);
