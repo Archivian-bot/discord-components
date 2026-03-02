@@ -4,7 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { createRef, ref, type Ref } from 'lit/directives/ref.js';
-import { avatars, profiles } from '../../config.js';
+import { profiles, resolveAvatar } from '../../config.js';
 import type { LightTheme, Profile } from '../../types.js';
 import { DiscordInputText } from '../discord-input-text/DiscordInputText.js';
 import { messagesLightTheme } from '../discord-messages/DiscordMessages.js';
@@ -551,8 +551,8 @@ export class DiscordModal extends LitElement implements LightTheme {
 			author: this.author
 		};
 
-		const profileData: Profile = ((this.profile !== undefined && Reflect.get(profiles, this.profile)) as Profile) || {};
-		const profile: Profile = { ...defaultData, ...profileData, avatar: this.resolveAvatar(profileData.avatar ?? this.avatar) };
+		const profileData: Profile = profiles(this.profile) ?? {};
+		const profile: Profile = { ...defaultData, ...profileData, avatar: resolveAvatar(profileData.avatar ?? this.avatar) };
 
 		return html`
 			<dialog
@@ -655,9 +655,6 @@ export class DiscordModal extends LitElement implements LightTheme {
 		`;
 	}
 
-	private resolveAvatar(avatar: string | undefined): string {
-		return avatar === undefined ? avatars.default : (avatars[avatar] ?? avatar ?? avatars.default);
-	}
 }
 
 declare global {

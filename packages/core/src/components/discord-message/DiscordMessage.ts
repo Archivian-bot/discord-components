@@ -4,7 +4,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { when } from 'lit/directives/when.js';
-import { avatars, profiles } from '../../config.js';
+import { profiles, resolveAvatar } from '../../config.js';
 import type { Profile, LightTheme, DiscordTimestamp } from '../../types.js';
 import { handleTimestamp } from '../../util.js';
 import '../discord-author-info/DiscordAuthorInfo.js';
@@ -434,8 +434,8 @@ export class DiscordMessage extends LitElement implements LightTheme {
 			roleName: this.roleName
 		};
 
-		const profileData: Profile = ((this.profile !== undefined && Reflect.get(profiles, this.profile)) as Profile) || {};
-		const profile: Profile = { ...defaultData, ...profileData, avatar: this.resolveAvatar(profileData.avatar ?? this.avatar) };
+		const profileData: Profile = profiles(this.profile) ?? {};
+		const profile: Profile = { ...defaultData, ...profileData, avatar: resolveAvatar(profileData.avatar ?? this.avatar) };
 
 		const computedTimestamp = handleTimestamp(this.timestamp, this.compactMode, this.twentyFour) ?? undefined;
 
@@ -548,9 +548,6 @@ export class DiscordMessage extends LitElement implements LightTheme {
 		`;
 	}
 
-	private resolveAvatar(avatar: string | undefined): string {
-		return avatar === undefined ? avatars.default : (avatars[avatar] ?? avatar ?? avatars.default);
-	}
 }
 
 declare global {

@@ -1,4 +1,27 @@
-import { getConfig, icons } from './config.js';
+import {
+	Crystal,
+	Diamond,
+	Explosion,
+	Flame,
+	Flower,
+	Heart,
+	Key,
+	Leaf,
+	Lightning,
+	Magic,
+	Moon,
+	Mushroom,
+	Mythical,
+	Ornament,
+	Plasma,
+	Rock,
+	Shell,
+	Skull,
+	Sun,
+	Sword,
+	Water
+} from './components/svgs/clan-icons/index.js';
+import { getConfig } from './config.js';
 import type { Emoji, DiscordTimestamp } from './types.js';
 
 export class DiscordComponentsError extends Error {
@@ -40,7 +63,7 @@ export function validateImageExtension(url: string) {
 
 const emojiRegex = /(?:<(?<animated>a)?:(?<name>\w{2,32}):)?(?<id>\d{17,21})>?/;
 export function getGlobalEmojiUrl(emojiName: string): Emoji | undefined {
-	const globalEmoji = getConfig().emojis?.[emojiName];
+	const globalEmoji = getConfig().emojis?.(emojiName);
 	if (globalEmoji) return globalEmoji;
 
 	const match = emojiRegex.exec(emojiName);
@@ -58,6 +81,30 @@ export function getGlobalEmojiUrl(emojiName: string): Emoji | undefined {
 	return undefined;
 }
 
+const builtInIcons = new Map<string, object>([
+	['heart', Heart()],
+	['crystal', Crystal()],
+	['diamond', Diamond()],
+	['explosion', Explosion()],
+	['flame', Flame()],
+	['flower', Flower()],
+	['key', Key()],
+	['leaf', Leaf()],
+	['lightning', Lightning()],
+	['magic', Magic()],
+	['moon', Moon()],
+	['mushroom', Mushroom()],
+	['mythical', Mythical()],
+	['ornament', Ornament()],
+	['plasma', Plasma()],
+	['rock', Rock()],
+	['shell', Shell()],
+	['skull', Skull()],
+	['sun', Sun()],
+	['sword', Sword()],
+	['water', Water()]
+]);
+
 /**
  * Get the image for a clan icon
  *
@@ -67,5 +114,5 @@ export function getGlobalEmojiUrl(emojiName: string): Emoji | undefined {
 export function getClanIcon(clanIcon: string | undefined): object | string | undefined {
 	if (!clanIcon) return undefined;
 
-	return icons.get(clanIcon) ?? clanIcon;
+	return getConfig().icons?.(clanIcon) ?? builtInIcons.get(clanIcon) ?? clanIcon;
 }

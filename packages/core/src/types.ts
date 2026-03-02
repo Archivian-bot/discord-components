@@ -30,12 +30,13 @@ export interface Profile {
 }
 
 export interface DiscordMessageOptions {
-	avatars?: Avatars;
+	avatars?: (key: string) => string | undefined;
 	defaultBackground?: 'discord' | 'none';
 	defaultMode?: string;
 	defaultTheme?: string;
-	emojis?: { [key: string]: Emoji };
-	profiles?: { [key: string]: Profile };
+	emojis?: (emoji: string) => Emoji | undefined;
+	icons?: (icon: string) => object | undefined;
+	profiles?: (profile: string) => Profile | undefined;
 }
 
 export interface Emoji {
